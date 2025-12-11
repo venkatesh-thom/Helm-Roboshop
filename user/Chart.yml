@@ -1,0 +1,5 @@
+apiVersion: v2
+name: user
+version: 1.0.0
+description: user helm chart installation for roboshops 
+appVersion: v1

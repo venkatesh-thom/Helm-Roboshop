@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+  namespace: roboshop
+  # these are replica set labels
+  labels:
+    project: roboshop
+    component: payment
+    tier: backend
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    # these labels are used to select pods
+    matchLabels:
+      project: roboshop
+      component: payment
+      tier: backend
+  # pod definition
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        component: payment
+        tier: backend
+    spec:
+      containers:
+      - name: payment
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageTag }}"
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: payment
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 500Mi    
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15

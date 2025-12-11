@@ -1,0 +1,5 @@
+apiVersion: v2
+name: redis
+version: 1.0.0
+description: redis helm chart installation for roboshops
+appVersion: 7.0

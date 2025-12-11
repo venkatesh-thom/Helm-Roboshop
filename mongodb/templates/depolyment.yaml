@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: roboshop
+spec:
+  selector:
+    matchLabels:
+      project: roboshop
+      component: mongodb
+      tier: db # has to match .spec.template.metadata.labels
+  serviceName: "mongodb-headless" # this should be head less service name
+  replicas: {{ .Values.deployment.replicas }} # by default is 1
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        component: mongodb
+        tier: db # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: mongodb
+        image: "{{ .Values.deployment.imageRepo}}:{{ .Values.deployment.imageTag }}"
+        readinessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+        volumeMounts:
+        - name: mongodb
+          mountPath: /data/db
+  # This is PVC
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "roboshop-ebs"
+      resources:
+        requests:
+          storage: 1Gi

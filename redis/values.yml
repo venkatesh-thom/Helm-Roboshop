@@ -1,0 +1,6 @@
+deployment:
+  replicas: 1
+  imageRepo: redis
+  imageTag: 7.0
+service:
+  type: ClusterIP

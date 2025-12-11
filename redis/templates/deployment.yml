@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: roboshop
+spec:
+  selector:
+    matchLabels:
+      project: roboshop
+      component: redis
+      tier: db # has to match .spec.template.metadata.labels
+  serviceName: "redis-headless" # this should be head less service name
+  replicas: {{ .Values.deployment.replicas }} # by default is 1
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        component: redis
+        tier: db # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageTag }}"
+        readinessProbe:
+          tcpSocket:
+            port:  6379 
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port:  6379 
+        volumeMounts:
+        - name: redis
+          mountPath: /data
+  # This is PVC
+  volumeClaimTemplates:
+  - metadata:
+      name: redis
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "roboshop-ebs"
+      resources:
+        requests:
+          storage: 1Gi

@@ -1,0 +1,6 @@
+deployment:
+  replicas: 1
+  imageRepo: venkatesh990/mysql
+  imageTag: v1
+service:
+  type: ClusterIP

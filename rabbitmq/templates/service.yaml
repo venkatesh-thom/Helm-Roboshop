@@ -1,0 +1,35 @@
+# headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-headless
+  labels:
+    project: roboshop
+    component: rabbitmq
+    tier: db
+spec:
+  clusterIP: None
+  selector:
+    project: roboshop
+    component: rabbitmq
+    tier: db
+  ports:
+  - port:  5672  #service port
+    targetPort:  5672  # container port
+    protocol: TCP  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: roboshop
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    project: roboshop
+    component: rabbitmq
+    tier: db
+  ports:
+    - protocol: TCP
+      port:  5672  #serive port
+      targetPort:  5672  #container port

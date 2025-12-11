@@ -1,0 +1,6 @@
+deployment:
+  replicas: 1
+  imageRepo: rabbitmq
+  imageTag: 3
+service:
+  type: ClusterIP

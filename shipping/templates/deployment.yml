@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping
+  namespace: roboshop
+  # these are replica set labels
+  labels:
+    project: roboshop
+    component: shipping
+    tier: backend
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    # these labels are used to select pods
+    matchLabels:
+      project: roboshop
+      component: shipping
+      tier: backend
+  # pod definition
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        component: shipping
+        tier: backend
+    spec:
+      containers:
+      - name: shipping
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageTag }}"
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: shipping
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "400m"
+            memory: "512Mi"  
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+          initialDelaySeconds: 60
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+          initialDelaySeconds: 60

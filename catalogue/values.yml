@@ -1,0 +1,8 @@
+deployment:
+  replicas: 1
+  imageRepo: venkatesh990/catalogue
+  imageTag: v1
+service:
+  type: ClusterIP
+configmap:
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"

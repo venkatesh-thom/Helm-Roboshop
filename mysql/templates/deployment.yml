@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: roboshop
+spec:
+  selector:
+    matchLabels:
+      project: roboshop
+      component: mysql
+      tier: db # has to match .spec.template.metadata.labels
+  serviceName: "mysql-headless" # this should be head less service name
+  replicas: {{ .Values.deployment.replicas }} # by default is 1
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        component: mysql
+        tier: db # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: mysql
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageTag }}"
+        readinessProbe:
+          tcpSocket:
+            port:  3306 
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port:  3306
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5  
+        volumeMounts:
+        - name: mysql
+          mountPath: /data/db    
+        volumeMounts:
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d/my.cnf
+          subPath: my.cnf
+      volumes:
+        - name: mysql-config
+          configMap:
+            name: mysql
+  # This is PVC
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "roboshop-ebs"
+      resources:
+        requests:
+          storage: 1Gi

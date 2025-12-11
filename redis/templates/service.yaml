@@ -1,0 +1,35 @@
+# headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-headless
+  labels:
+    project: roboshop
+    component: redis
+    tier: db
+spec:
+  clusterIP: None
+  selector:
+    project: roboshop
+    component: redis
+    tier: db
+  ports:
+  - port:  6379  #service port
+    targetPort:  6379  # container port
+    protocol: TCP  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: roboshop
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    project: roboshop
+    component: redis
+    tier: db
+  ports:
+    - protocol: TCP
+      port:  6379  #serive port
+      targetPort:  6379  #container port
