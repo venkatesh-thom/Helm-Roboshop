@@ -1,0 +1,7 @@
+apiVersion: v1                    # API version for basic Kubernetes resources
+kind: Namespace                  # Declares that we are creating a Namespace object
+metadata:                        # Metadata section for the namespace
+  name: roboshop                 # Name of the namespace
+  labels:                        # Key-value labels used for identifying or grouping resources
+    environment: development     # Label to specify environment type (dev/stage/prod)
+    project: roboshop            # Label to identify the project this namespace belongs to
