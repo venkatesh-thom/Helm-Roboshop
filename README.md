@@ -253,12 +253,19 @@ kubectl apply -f roboshop-ebs-sc.yml
 
 ```
 ---
-# To Create At One time : 
+## To Create At One time : 
 
-  - for i in  mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend;do cd $i; helm install $i .;cd ..;done
+``` bash
+   for i in  mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend;do cd $i; helm install $i .;cd ..;done
 
-# To delete  At One time : 
+```
+
+## To delete  At One time : 
+
+``` bash
   - for i in  mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend;do cd $i; helm uninstall $i .;cd ..;done
+
+```
 
 ---
 
