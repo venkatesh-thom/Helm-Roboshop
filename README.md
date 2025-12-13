@@ -243,34 +243,48 @@ helm uninstall frontend -n roboshop
 ---
 
 
-# Before Creating:
-``` bash 
+# Roboshop Deployment using Helm
+
+---
+
+## 🔹 Before Creating Resources
+
+```bash
 kubectl apply -f eks.yml
-
 kubectl apply -f namespace.yml
-
 kubectl apply -f roboshop-ebs-sc.yml
 
 ```
 ---
-## To Create At One time : 
 
-``` bash
-   for i in  mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend;do cd $i; helm install $i .;cd ..;done
+## 🚀 Create All Services at Once: 
+
+```bash
+
+for i in mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend
+do
+  cd $i
+  helm install $i . -n roboshop
+  cd ..
+done
 
 ```
+## ❌ Delete All Services at Once:
 
-## To delete  At One time : 
+  ⚠️ Important: helm uninstall does NOT take .
 
 ``` bash
-  - for i in  mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend;do cd $i; helm uninstall $i .;cd ..;done
+ for i in mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend
+do
+  helm uninstall $i -n roboshop
+done
 
 ```
 
 ---
 
 
-# Deletion :
+# 🧹 Delete Kubernetes Resources :
 ``` bash 
 
 kubectl delete -f roboshop-ebs-sc.yml
@@ -280,3 +294,15 @@ kubectl delete -f namespace.yml
 kubectl delete -f eks.yml
 
 ``` 
+
+## 📌 Notes
+
+- Always run Helm commands from the directory that contains Chart.yaml
+
+- Chart.yaml filename is case-sensitive
+
+- Use helm upgrade --install if re-running deployments
+
+- Recommended node size: t3.medium or higher
+
+---
