@@ -264,7 +264,7 @@ kubectl apply -f roboshop-ebs-sc.yml
 for i in mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend
 do
   cd $i
-  helm install $i . -n roboshop
+  helm install $i . 
   cd ..
 done
 
@@ -276,7 +276,7 @@ done
 ``` bash
  for i in mongodb redis mysql rabbitmq catalogue user cart shipping payment frontend
 do
-  helm uninstall $i -n roboshop
+  helm uninstall $i 
 done
 
 ```
